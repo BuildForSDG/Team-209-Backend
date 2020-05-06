@@ -3,7 +3,7 @@ name: LaravelCI
 on: [push]
     
 jobs:
-  PHP_CS-test:
+  PHP_CodeSniffer-Test:
 
     runs-on: ubuntu-latest
     
@@ -21,7 +21,7 @@ jobs:
       run: vendor/bin/phpcs 
 
 
-  LaraStan-test:
+  LaraStan-Test:
     runs-on: ubuntu-latest
     
     steps:
@@ -38,7 +38,7 @@ jobs:
       run: vendor/bin/phpstan analyse
   
   
-  phpunit:
+  PHPUnit-Feature-Test:
     runs-on: ubuntu-latest
     container:
       image: kirschbaumdevelopment/laravel-test-runner:7.3
