@@ -81,7 +81,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Team ~ 209 ~ Backend
+                    Team ~ 209 ~ Backend.
                 </div>
 
                 <div class="links">
