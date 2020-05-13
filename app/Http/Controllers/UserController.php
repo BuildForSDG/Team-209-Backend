@@ -7,7 +7,6 @@ use App\Http\Resources\UserResource;
 use App\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
@@ -20,7 +19,6 @@ class UserController extends Controller
     public function index()
     {
         return UserResource::collection(User::all());
-//            ->header("Accept", "application/vnd.api+json");
     }
 
     /**
@@ -56,12 +54,12 @@ class UserController extends Controller
      *
      * @param StoreUser $request
      * @param User $user
-     * @return Response
+     * @return UserResource
      */
     public function update(StoreUser $request, User $user)
     {
         $user->update(User::preProcess($request));
-        return response($user, 201, ["Accept" => "application/vnd.api+json"]);
+        return new UserResource($user);
     }
 
     /**
