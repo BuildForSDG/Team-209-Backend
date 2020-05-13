@@ -25,11 +25,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('users', 'UserController@store');
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('users', 'UserController@index');
+    Route::get('users', 'UserController@index')->name("users.index");
+    Route::get('users/{user}', 'UserController@show')->name("users.show");
 
     Route::post('/logout', function () {
         Auth::user()->currentAccessToken()->delete();
-        return "sasas";
+        return response("Logout Successful", 204);
     });
 });
 
@@ -40,7 +41,7 @@ Route::post('/login', function (Request $request) {
         'device_name' => 'required'
     ]);
 
-    $user = User::where('email', $request->email)->first();
+    $user = User::where(['email'=> $request->email, "type" => "web"])->first();
 
     if (! $user || ! Hash::check($request->password, $user->password)) {
         throw ValidationException::withMessages([

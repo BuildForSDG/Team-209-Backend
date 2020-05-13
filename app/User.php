@@ -3,14 +3,14 @@
 namespace App;
 
 use App\Http\Requests\StoreUser;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Jenssegers\Agent\Agent;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
     use Notifiable, HasApiTokens;
 
@@ -64,5 +64,10 @@ class User extends Authenticatable implements MustVerifyEmail
         $validated_values["type"] = $agent->isPhone() ?  "mobile" : "web";
 
         return $validated_values;
+    }
+
+    public function getImageAttribute($value)
+    {
+        return Storage::url("public/images/uploads/$value");
     }
 }
