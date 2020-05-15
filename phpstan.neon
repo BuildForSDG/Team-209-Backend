@@ -14,5 +14,6 @@ parameters:
 
     excludes_analyse:
         - ./*/*/FileToBeExcluded.php
+        - ./app/Http/Resources/TokenResource.php
 
     checkMissingIterableValueType: false

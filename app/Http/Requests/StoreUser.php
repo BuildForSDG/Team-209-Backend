@@ -36,10 +36,11 @@ class StoreUser extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$this->id],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'image' => ['sometimes','image','mimes:jpeg,png,jpg,svg','max:1024'],
+            'data.type' => ["required", "in:users"],
+            'data.attributes' => ["required" ," array"],
+            'data.attributes.name' => ['required', 'string', 'max:255'],
+            'data.attributes.email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$this->id],
+            'data.attributes.password' => ['required', 'string', 'min:8', 'confirmed'],
         ];
     }
 }

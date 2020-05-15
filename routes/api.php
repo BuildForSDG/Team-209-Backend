@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Resources\TokenResource;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,34 +23,40 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('users', 'UserController@store');
-
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('users', 'UserController@index')->name("users.index");
     Route::get('users/{user}', 'UserController@show')->name("users.show");
+    Route::post('users/{user}/image', 'UserController@storeImage')->name("users.storeImage");
+    Route::delete('users/{user}/image', 'UserController@destroyImage')->name("users.destroyImage");
+
+//    Route::get('tokens/{token}/relationships/users', '')->name("tokes.relationships.users");
+//    Route::get('tokens/{token}/users', 'UserController@show')->name("tokes.users);
 
     Route::post('/logout', function () {
-        Auth::user()->currentAccessToken()->delete();
-        return response("Logout Successful", 204);
+        return Auth::user()->currentAccessToken()->delete();
     });
 });
+Route::post('users', 'UserController@store');
+
 
 Route::post('/login', function (Request $request) {
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-        'device_name' => 'required'
-    ]);
+    $validated_inputs = $request->validate([
+        'data.attributes.email' => 'required|email',
+        'data.attributes.password' => 'required',
+        'data.attributes.device_name' => 'required'
+    ])["data"]["attributes"];
 
-    $user = User::where(['email'=> $request->email, "type" => "web"])->first();
+    $user = User::where(['email'=> $validated_inputs["email"]])->first();
+//    $user = User::where(['email'=> $validate_inputs["email"], "type" => "mobile"])->first();
 
-    if (! $user || ! Hash::check($request->password, $user->password)) {
+    if (! $user || ! Hash::check($validated_inputs["password"], $user->password)) {
         throw ValidationException::withMessages([
             'email' => ['The provided credentials are incorrect.'],
         ]);
     }
+    $newToken = $user->createToken($validated_inputs["device_name"]);
 
-    return $user->createToken($request->device_name)->plainTextToken;
+    return new TokenResource($newToken);
 });
 
 //Route::apiResource('users', 'UserController');
