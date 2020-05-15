@@ -52,13 +52,6 @@ class User extends Authenticatable
     public static function preProcess(StoreUser $request)
     {
         $validated_values = $request->validated();
-        unset($validated_values['image']);
-
-        if ($request->hasFile('image')) {
-            $image_name = time() . '.' . $request->file('image')->clientExtension();
-            $request->file('image')->storeAs('public/images/uploads', $image_name, ["visibility" => "public"]);
-            $validated_values['image'] = $image_name;
-        }
 
         $agent = new Agent();
         $validated_values["type"] = $agent->isPhone() ?  "mobile" : "web";
@@ -68,6 +61,6 @@ class User extends Authenticatable
 
     public function getImageAttribute($value)
     {
-        return Storage::url("public/images/uploads/$value");
+        return Storage::url("public/images/uploads/profile/".$value);
     }
 }

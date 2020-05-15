@@ -22,17 +22,18 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('users', 'UserController@store');
-
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('users', 'UserController@index')->name("users.index");
     Route::get('users/{user}', 'UserController@show')->name("users.show");
+    Route::post('users/{user}/image', 'UserController@storeImage')->name("users.storeImage");
+    Route::delete('users/{user}/image', 'UserController@destroyImage')->name("users.destroyImage");
 
     Route::post('/logout', function () {
-        Auth::user()->currentAccessToken()->delete();
-        return response("Logout Successful", 204);
+        return Auth::user()->currentAccessToken()->delete();
     });
 });
+Route::post('users', 'UserController@store');
+
 
 Route::post('/login', function (Request $request) {
     $request->validate([
@@ -41,15 +42,18 @@ Route::post('/login', function (Request $request) {
         'device_name' => 'required'
     ]);
 
-    $user = User::where(['email'=> $request->email, "type" => "web"])->first();
+    $user = User::where(['email'=> $request->email, "type" => "mobile"])->first();
 
     if (! $user || ! Hash::check($request->password, $user->password)) {
         throw ValidationException::withMessages([
             'email' => ['The provided credentials are incorrect.'],
         ]);
     }
+    $newToken = $user->createToken($request->device_name);
+    dump($newToken->accessToken);
+    dump($newToken->plainTextToken);
 
-    return $user->createToken($request->device_name)->plainTextToken;
+    return $newToken->plainTextToken;
 });
 
 //Route::apiResource('users', 'UserController');
