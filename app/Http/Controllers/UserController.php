@@ -8,6 +8,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -27,12 +28,17 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreUser $request
-     * @return UserResource
+     * @return JsonResponse
      */
     public function store(StoreUser $request)
     {
-        $user = User::create(User::preProcess($request));
-        return new UserResource($user);
+        $validated_request = User::preProcess($request)["data"]["attributes"];
+        unset($validated_request["password_confirmation"]);
+
+        $user = User::create($validated_request);
+        return (new UserResource($user->refresh()))
+            ->response()
+            ->header("Location", route("users.show", ["user" => $user]));
     }
 
     /**
@@ -68,7 +74,7 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param User $user
-     * @return void
+     * @return Response
      * @throws \Exception
      */
     public function destroy(User $user)
@@ -77,6 +83,7 @@ class UserController extends Controller
             Storage::delete("public/images/uploads/profile/$user->image");
         }
         $user->delete();
+        return response(null, 204);
     }
 
     /**
@@ -109,7 +116,7 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param User $user
-     * @return void
+     * @return Response
      * @throws \Exception
      */
     public function destroyImage(User $user)
@@ -117,10 +124,12 @@ class UserController extends Controller
         $image_name = Str::afterLast($user->image, "/");
 
         if ($image_name == "default.png") {
-            return;
+            return response(null, 204);
         }
 
         Storage::delete("public/images/uploads/profile/".$image_name);
         $user->update(["image" => "default.png"]);
+
+        return response(null, 204);
     }
 }

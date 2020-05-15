@@ -54,7 +54,7 @@ class User extends Authenticatable
         $validated_values = $request->validated();
 
         $agent = new Agent();
-        $validated_values["type"] = $agent->isPhone() ?  "mobile" : "web";
+        $validated_values["data"]["attributes"]["type"] = $agent->isPhone() ?  "mobile" : "web";
 
         return $validated_values;
     }

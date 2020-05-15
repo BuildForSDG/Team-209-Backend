@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Resources\TokenResource;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,6 +29,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('users/{user}/image', 'UserController@storeImage')->name("users.storeImage");
     Route::delete('users/{user}/image', 'UserController@destroyImage')->name("users.destroyImage");
 
+//    Route::get('tokens/{token}/relationships/users', '')->name("tokes.relationships.users");
+//    Route::get('tokens/{token}/users', 'UserController@show')->name("tokes.users);
+
     Route::post('/logout', function () {
         return Auth::user()->currentAccessToken()->delete();
     });
@@ -36,24 +40,25 @@ Route::post('users', 'UserController@store');
 
 
 Route::post('/login', function (Request $request) {
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-        'device_name' => 'required'
-    ]);
+    $validated_inputs = $request->validate([
+        'data.attributes.email' => 'required|email',
+        'data.attributes.password' => 'required',
+        'data.attributes.device_name' => 'required'
+    ])["data"]["attributes"];
 
-    $user = User::where(['email'=> $request->email, "type" => "mobile"])->first();
+    $user = User::where(['email'=> $validated_inputs["email"]])->first();
+//    $user = User::where(['email'=> $validate_inputs["email"], "type" => "mobile"])->first();
 
-    if (! $user || ! Hash::check($request->password, $user->password)) {
+    if (! $user || ! Hash::check($validated_inputs["password"], $user->password)) {
         throw ValidationException::withMessages([
             'email' => ['The provided credentials are incorrect.'],
         ]);
     }
-    $newToken = $user->createToken($request->device_name);
+    $newToken = $user->createToken($validated_inputs["device_name"]);
     dump($newToken->accessToken);
     dump($newToken->plainTextToken);
 
-    return $newToken->plainTextToken;
+    return new TokenResource($newToken);
 });
 
 //Route::apiResource('users', 'UserController');
