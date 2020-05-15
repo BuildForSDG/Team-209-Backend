@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -96,7 +97,7 @@ class UserController extends Controller
             $this->destroyImage($user);
         }
 
-        $image_name = time() . '.' . $request->file('image')->clientExtension();
+        $image_name = Str::random() . '.' . $request->file('image')->clientExtension();
         $request->file('image')->storeAs('public/images/uploads/profile', $image_name, ["visibility" => "public"]);
 
 
@@ -113,16 +114,13 @@ class UserController extends Controller
      */
     public function destroyImage(User $user)
     {
-        $image_name = explode("/", $user->image);
-        $image_name = end($image_name);
+        $image_name = Str::afterLast($user->image, "/");
 
         if ($image_name == "default.png") {
             return;
         }
 
         Storage::delete("public/images/uploads/profile/".$image_name);
-
         $user->update(["image" => "default.png"]);
     }
 }
-
