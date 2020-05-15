@@ -55,8 +55,6 @@ Route::post('/login', function (Request $request) {
         ]);
     }
     $newToken = $user->createToken($validated_inputs["device_name"]);
-    dump($newToken->accessToken);
-    dump($newToken->plainTextToken);
 
     return new TokenResource($newToken);
 });
