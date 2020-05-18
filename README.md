@@ -1,6 +1,7 @@
 <p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
 
 ![](https://github.com/BuildForSDG/Team-209-Backend/workflows/Laravel-CI%2FCD/badge.svg)
+[![codecov](https://codecov.io/gh/BuildForSDG/Team-209-Backend/branch/develop/graph/badge.svg)](https://codecov.io/gh/BuildForSDG/Team-209-Backend)
 
 <p align="center">
 <a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
