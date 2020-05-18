@@ -78,7 +78,7 @@ jobs:
       run: php artisan key:generate
 
     - name: PHP version is
-        run: php --version
+      run: php --version
 
     - name: Run Testsuite
       env:
