@@ -65,7 +65,7 @@ jobs:
         fetch-depth: 1
 
     - name: Current Reference Branch
-      run:  ${{github.ref}}
+      run: echo ${{github.ref}}
 
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
