@@ -29,5 +29,7 @@
         <server name="TELESCOPE_ENABLED" value="false"/>
     </php>
 
-
+    <logging>
+        <log type="coverage-clover" target="clover.xml"/>
+    </logging>
 </phpunit>
