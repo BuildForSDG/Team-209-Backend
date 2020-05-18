@@ -77,6 +77,9 @@ jobs:
     - name: Generate key
       run: php artisan key:generate
 
+    - name: Xdebug Action
+      uses: MilesChou/docker-xdebug@master
+
     - name: Run Testsuite
       env:
         DB_CONNECTION: mysql
@@ -92,7 +95,7 @@ jobs:
       uses: codecov/codecov-action@v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        file: clover.xml
+        file: ./clover.xml
         flags: unittests,featuretests
         name: codecov-umbrella
         fail_ci_if_error: true
