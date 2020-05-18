@@ -6,6 +6,7 @@
 .env
 .env.backup
 .phpunit.result.cache
+clover.xml
 Homestead.json
 Homestead.yaml
 npm-debug.log
