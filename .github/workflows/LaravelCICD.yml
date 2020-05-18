@@ -77,9 +77,6 @@ jobs:
     - name: Generate key
       run: php artisan key:generate
 
-    - name: Xdebug Action
-      uses: MilesChou/docker-xdebug@master
-
     - name: PHP version is
       run: php --version
 
