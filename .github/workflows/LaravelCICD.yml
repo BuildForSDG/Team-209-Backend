@@ -89,13 +89,14 @@ jobs:
       run: vendor/bin/phpunit tests/
 
     - name: Upload to CodeCov
-      - uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          file: ./clover.xml # optional
-          flags: unittests,featuretests # optional
-          name: codecov-umbrella # optional
-          fail_ci_if_error: true # optional (default = false)
+    - uses: actions/checkout@master
+    - uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+        file: ./clover.xml # optional
+        flags: unittests,featuretests # optional
+        name: codecov-umbrella # optional
+        fail_ci_if_error: true # optional (default = false)
 
 
 
