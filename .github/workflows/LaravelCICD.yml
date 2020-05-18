@@ -47,7 +47,7 @@ jobs:
     needs: LaraStan-Test
     runs-on: ubuntu-latest
     container:
-      image: paajaeke/laravel-test-runner:7.4
+      image: paajake/laravel-test-runner:7.4
 
     services:
       mysql:
