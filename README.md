@@ -1,6 +1,7 @@
 <p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
 
 ![](https://github.com/BuildForSDG/Team-209-Backend/workflows/Laravel-CI%2FCD/badge.svg)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/dea34bcf3c61497d8593eba3f0b714c3)](https://app.codacy.com/gh/BuildForSDG/Team-209-Backend?utm_source=github.com&utm_medium=referral&utm_content=BuildForSDG/Team-209-Backend&utm_campaign=Badge_Grade_Settings)
 [![codecov](https://codecov.io/gh/BuildForSDG/Team-209-Backend/branch/develop/graph/badge.svg)](https://codecov.io/gh/BuildForSDG/Team-209-Backend)
 
 <p align="center">
