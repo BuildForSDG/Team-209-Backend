@@ -21,7 +21,7 @@ class TokenResource extends JsonResource
      */
     public function toArray($request)
     {
-        $user = User::find($this->accessToken->id);
+        $user = User::find($this->accessToken->tokenable_id);
         return [
             'id' => strval($this->accessToken->id),
             'type' => 'users',
