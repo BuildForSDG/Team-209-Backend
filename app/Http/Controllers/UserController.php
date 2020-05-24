@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUser;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\UserCollection;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -22,6 +23,7 @@ class UserController extends Controller
     public function index()
     {
         return UserResource::collection(User::all());
+//        return new UserCollection(User::all());
     }
 
     /**
@@ -32,10 +34,10 @@ class UserController extends Controller
      */
     public function store(StoreUser $request)
     {
-        $validated_request = User::preProcess($request)["data"]["attributes"];
-        unset($validated_request["password_confirmation"]);
+        $processed_request = User::preProcess($request->validated());
 
-        $user = User::create($validated_request);
+        $user = User::create($processed_request);
+
         return (new UserResource($user->refresh()))
             ->response()
             ->header("Location", route("users.show", ["user" => $user]));
@@ -66,7 +68,7 @@ class UserController extends Controller
      */
     public function update(StoreUser $request, User $user)
     {
-        $user->update(User::preProcess($request));
+        $user->update(User::preProcess($request->validated()));
         return new UserResource($user);
     }
 

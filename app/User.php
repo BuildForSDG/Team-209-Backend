@@ -46,17 +46,17 @@ class User extends Authenticatable
     }
 
     /**
-     * @param StoreUser $request
+     * @param array $validated_values
      * @return array
      */
-    public static function preProcess(StoreUser $request)
+    public static function preProcess(array $validated_values)
     {
-        $validated_values = $request->validated();
+        unset($validated_values["data"]["attributes"]["password_confirmation"]);
 
         $agent = new Agent();
         $validated_values["data"]["attributes"]["type"] = $agent->isPhone() ?  "mobile" : "web";
 
-        return $validated_values;
+        return $validated_values["data"]["attributes"];
     }
 
     public function getImageAttribute($value)
