@@ -26,6 +26,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('users', 'UserController@index')->name("users.index");
     Route::get('users/{user}', 'UserController@show')->name("users.show");
+    Route::get('users/{user}', 'UserController@destroy')->name("users.destroy");
     Route::post('users/{user}/image', 'UserController@storeImage')->name("users.storeImage");
     Route::delete('users/{user}/image', 'UserController@destroyImage')->name("users.destroyImage");
 
@@ -35,6 +36,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', function () {
         return Auth::user()->currentAccessToken()->delete();
     });
+
+    Route::apiResource("reports", "ReportController");
 });
 Route::post('users', 'UserController@store');
 
