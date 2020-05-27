@@ -28,7 +28,8 @@
         "nunomaduro/collision": "^4.1",
         "nunomaduro/larastan": "^0.5.7",
         "phpunit/phpunit": "^8.5",
-        "squizlabs/php_codesniffer": "^3.5"
+        "squizlabs/php_codesniffer": "^3.5",
+        "ext-json": "*"
     },
     "config": {
         "optimize-autoloader": true,

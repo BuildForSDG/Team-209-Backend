@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUser;
+use App\Http\Requests\UpdateUser;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UserCollection;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -18,11 +18,14 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return AnonymousResourceCollection
+     * @return JsonResponse
      */
     public function index()
     {
-        return UserResource::collection(User::all());
+        return (UserResource::collection(User::all()))
+            ->response()
+            ->header("Content-Type", "application/vnd.api+json");
+
 //        return new UserCollection(User::all());
     }
 
@@ -40,6 +43,7 @@ class UserController extends Controller
 
         return (new UserResource($user->refresh()))
             ->response()
+            ->header("Content-Type", "application/vnd.api+json")
             ->header("Location", route("users.show", ["user" => $user]));
     }
 
@@ -56,20 +60,26 @@ class UserController extends Controller
             return response()->json(['error' => 'Not authorized.'], 403);
         }
 
-        return new UserResource($user);
+        return (new UserResource($user))
+            ->response()
+            ->header("Content-Type", "application/vnd.api+json");
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param StoreUser $request
+     * @param UpdateUser $request
      * @param User $user
-     * @return UserResource
+     * @return JsonResponse
      */
-    public function update(StoreUser $request, User $user)
+    public function update(UpdateUser $request, User $user)
     {
+        dump(User::preProcess($request->validated()));
         $user->update(User::preProcess($request->validated()));
-        return new UserResource($user);
+
+        return (new UserResource($user->refresh()))
+            ->response()
+            ->header("Content-Type", "application/vnd.api+json");
     }
 
     /**
@@ -81,9 +91,12 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        if ($user->image != "default.png") {
-            Storage::delete("public/images/uploads/profile/$user->image");
+        $image_name = Str::afterLast($user->image, "/");
+
+        if ($image_name != "default.png") {
+            $this->destroyImage($user);
         }
+
         $user->delete();
         return response(null, 204);
     }
@@ -102,7 +115,9 @@ class UserController extends Controller
             'image' => ['required','image','mimes:jpeg,png,jpg,svg','max:1024']
         ]);
 
-        if ($user->image != "default.png") {
+        $image_name = Str::afterLast($user->image, "/");
+
+        if ($image_name != "default.png") {
             $this->destroyImage($user);
         }
 

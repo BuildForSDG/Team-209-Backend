@@ -24,7 +24,7 @@ class TokenResource extends JsonResource
         $user = User::find($this->accessToken->tokenable_id);
         return [
             'id'         => strval($this->accessToken->id),
-            'type'       => 'users',
+            'type'       => 'tokens',
             'attributes' => [
                 'device_name'   => $this->accessToken->name,
                 'token'         => $this->plainTextToken,
@@ -48,7 +48,6 @@ class TokenResource extends JsonResource
                 ]
             ],
             "included" => [
-                [
                     "id"            => strval($this->accessToken->tokenable_id),
                     "type"          => "users",
                     "attributes"    => [
@@ -56,7 +55,6 @@ class TokenResource extends JsonResource
                         "email" => $user->email,
                         "image" => $user->image
                     ]
-                ]
             ]
         ];
     }

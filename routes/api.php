@@ -26,17 +26,20 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('users', 'UserController@index')->name("users.index");
     Route::get('users/{user}', 'UserController@show')->name("users.show");
+    Route::patch('users/{user}', 'UserController@update')->name("users.update");
+    Route::delete('users/{user}', 'UserController@destroy')->name("users.delete");
     Route::post('users/{user}/image', 'UserController@storeImage')->name("users.storeImage");
-    Route::delete('users/{user}/image', 'UserController@destroyImage')->name("users.destroyImage");
+    Route::delete('users/{user}/image', 'UserController@destroyImage')->name("users.deleteImage");
 
 //    Route::get('tokens/{token}/relationships/users', '')->name("tokes.relationships.users");
 //    Route::get('tokens/{token}/users', 'UserController@show')->name("tokes.users);
 
     Route::post('/logout', function () {
-        return Auth::user()->currentAccessToken()->delete();
-    });
+        Auth::user()->currentAccessToken()->delete();
+        return response(null, 204);
+    })->name("api.logout");
 });
-Route::post('users', 'UserController@store');
+Route::post('users', 'UserController@store')->name("users.store");
 
 
 Route::post('/login', function (Request $request) {
@@ -56,7 +59,9 @@ Route::post('/login', function (Request $request) {
     }
     $newToken = $user->createToken($validated_inputs["device_name"]);
 
-    return new TokenResource($newToken);
-});
+    return (new TokenResource($newToken))
+        ->response()
+        ->header("Content-Type", "application/vnd.api+json");
+})->name("api.login");
 
 //Route::apiResource('users', 'UserController');
