@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\UploadedFile;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -234,5 +235,53 @@ class UserControllerTest extends TestCase
         Sanctum::actingAs($user, ["*"]);
         $this->deleteJson(route("users.delete", ["user" => $user]))->assertStatus(204);
         $this->assertDatabaseCount("users", 0);
+    }
+
+    /**
+     * @test
+     */
+    public function userUploadProfileImage()
+    {
+        $user = factory(User::class)->create();
+
+        $this->postJson(route("users.storeImage", ["user" => $user]), [
+            'image' => UploadedFile::fake()->image("image.png")
+        ])->assertStatus(401);
+
+        Sanctum::actingAs($user, ["*"]);
+        $this->postJson(route("users.storeImage", ["user" => $user]), [
+            'image' => UploadedFile::fake()->image("image.txt")
+        ])->assertStatus(422);
+
+        $this->postJson(route("users.storeImage", ["user" => $user]), [
+            'image' => UploadedFile::fake()->image("image.png")
+        ])->assertOk();
+
+        $this->assertDatabaseMissing("users", [
+            "id" => $user->id,
+            "image" => "default.png"
+        ]);
+    }
+
+
+    /**
+     * @test
+     */
+    public function userDeleteProfileImage()
+    {
+        $user = factory(User::class)->create();
+        $this->deleteJson(route("users.deleteImage", ["user" => $user]))->assertStatus(401);
+
+        Sanctum::actingAs($user, ["*"]);
+        $this->postJson(route("users.storeImage", ["user" => $user]), [
+            'image' => UploadedFile::fake()->image("image.png")
+        ])->assertOk();
+
+        $this->deleteJson(route("users.deleteImage", ["user" => $user]))->assertStatus(204);
+
+        $this->assertDatabaseHas("users", [
+            "id" => $user->id,
+            "image" => "default.png"
+        ]);
     }
 }
