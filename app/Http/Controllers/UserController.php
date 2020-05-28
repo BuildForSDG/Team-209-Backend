@@ -12,6 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class UserController extends Controller
 {
@@ -22,11 +23,17 @@ class UserController extends Controller
      */
     public function index()
     {
-        return (UserResource::collection(User::all()))
+        /** @phpstan-ignore-next-line */
+        $users = QueryBuilder::for(User::class)->allowedSorts([
+            "name",
+            "email",
+            "created_at",
+            "updated_at"
+        ])->jsonPaginate();
+
+        return (new UserCollection($users))
             ->response()
             ->header("Content-Type", "application/vnd.api+json");
-
-//        return new UserCollection(User::all());
     }
 
     /**
