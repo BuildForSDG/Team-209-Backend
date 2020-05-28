@@ -49,7 +49,7 @@ class UserControllerTest extends TestCase
     public function singleUserFetch()
     {
         $user = factory(User::class)->create()->refresh();
-        $this->getJson(route("users.show", ["user" => $user]))->assertStatus(401);
+        $this->getJson(route("users.show", ["user" => $user]))->assertStatus(403);
 
         Sanctum::actingAs($user, ["*"]);
         $response = $this->getJson(route("users.show", ["user" => $user]));
@@ -72,7 +72,7 @@ class UserControllerTest extends TestCase
     public function allUsersFetch()
     {
         $users = factory(User::class, 5)->create();
-        $this->getJson(route("users.show", ["user" => $users[0]]))->assertStatus(401);
+        $this->getJson(route("users.show", ["user" => $users[0]]))->assertStatus(403);
 
         Sanctum::actingAs($users[0], ["*"]);
         $response = $this->getJson(route("users.index"));
@@ -110,7 +110,7 @@ class UserControllerTest extends TestCase
         $name = $this->faker->name;
         $email = $this->faker->unique()->email;
 
-        $this->patchJson(route("users.update", ["user" => $user]))->assertStatus(401);
+        $this->patchJson(route("users.update", ["user" => $user]))->assertStatus(403);
         Sanctum::actingAs($user, ["*"]);
 
         $response = $this->patchJson(route("users.update", ["user" => $user]), [
@@ -216,7 +216,7 @@ class UserControllerTest extends TestCase
 
         $this->assertDatabaseCount("personal_access_tokens", 1);
 
-        $this->postJson(route("api.logout"))->assertStatus(401);
+        $this->postJson(route("api.logout"))->assertStatus(403);
 
         Sanctum::actingAs($user, ["*"]);
         $this->postJson(route("api.logout"))->assertStatus(204);
@@ -230,7 +230,7 @@ class UserControllerTest extends TestCase
         $user = factory(User::class)->create();
         $this->assertDatabaseCount("users", 1);
 
-        $this->deleteJson(route("users.delete", ["user" => $user]))->assertStatus(401);
+        $this->deleteJson(route("users.delete", ["user" => $user]))->assertStatus(403);
 
         Sanctum::actingAs($user, ["*"]);
         $this->deleteJson(route("users.delete", ["user" => $user]))->assertStatus(204);
@@ -246,7 +246,7 @@ class UserControllerTest extends TestCase
 
         $this->postJson(route("users.storeImage", ["user" => $user]), [
             'image' => UploadedFile::fake()->image("image.png")
-        ])->assertStatus(401);
+        ])->assertStatus(403);
 
         Sanctum::actingAs($user, ["*"]);
         $this->postJson(route("users.storeImage", ["user" => $user]), [
@@ -270,7 +270,7 @@ class UserControllerTest extends TestCase
     public function userDeleteProfileImage()
     {
         $user = factory(User::class)->create();
-        $this->deleteJson(route("users.deleteImage", ["user" => $user]))->assertStatus(401);
+        $this->deleteJson(route("users.deleteImage", ["user" => $user]))->assertStatus(403);
 
         Sanctum::actingAs($user, ["*"]);
         $this->postJson(route("users.storeImage", ["user" => $user]), [
