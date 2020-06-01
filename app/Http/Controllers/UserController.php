@@ -81,7 +81,6 @@ class UserController extends Controller
      */
     public function update(UpdateUser $request, User $user)
     {
-        dump(User::preProcess($request->validated()));
         $user->update(User::preProcess($request->validated()));
 
         return (new UserResource($user->refresh()))
