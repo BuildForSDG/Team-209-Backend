@@ -34,6 +34,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 //    Route::get('tokens/{token}/relationships/users', '')->name("tokes.relationships.users");
 //    Route::get('tokens/{token}/users', 'UserController@show')->name("tokes.users);
 
+    Route::apiResource("incidents", "IncidentController");
+
     Route::post('/logout', function () {
         Auth::user()->currentAccessToken()->delete();
         return response(null, 204);
@@ -63,5 +65,3 @@ Route::post('/login', function (Request $request) {
         ->response()
         ->header("Content-Type", "application/vnd.api+json");
 })->name("api.login");
-
-//Route::apiResource('users', 'UserController');
