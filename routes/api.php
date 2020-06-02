@@ -35,6 +35,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 //    Route::get('tokens/{token}/users', 'UserController@show')->name("tokes.users);
 
     Route::apiResource("incidents", "IncidentController");
+    Route::apiResource("reports", "ReportController");
 
     Route::post('/logout', function () {
         Auth::user()->currentAccessToken()->delete();

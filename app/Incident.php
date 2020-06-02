@@ -15,7 +15,7 @@ class Incident extends Model
     protected $guarded = ["id"];
     protected $dateFormat = 'Y-m-d H:i:s.u';
     protected $dates = [
-        "deactivated"
+        "deactivated_at"
     ];
 
     protected $spatialFields = [
@@ -33,5 +33,20 @@ class Incident extends Model
         $pointsArray[] = new Point($LineStringCoordinates[0][1], $LineStringCoordinates[0][0]);
 
         return new Polygon([new LineString($pointsArray)]);
+    }
+
+    public function reports()
+    {
+        return $this->hasMany('App\Report');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('deactivated_at', '=', null);
+    }
+
+    public function scopeDeactivated($query)
+    {
+        return $query->where('deactivated_at', '<>', null);
     }
 }

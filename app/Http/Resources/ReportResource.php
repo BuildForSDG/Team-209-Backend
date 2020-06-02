@@ -4,6 +4,11 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * Class ReportResource
+ * @package App\Http\Resources
+ * @mixin  \App\Report
+ */
 class ReportResource extends JsonResource
 {
     /**
@@ -14,6 +19,16 @@ class ReportResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id'            => strval($this->id),
+            'type'          => 'reports',
+            'attributes'    => [
+                'address'      => $this->address,
+                'latitude'     => $this->location->getLat(),
+                'longitude'     => $this->location->getLng(),
+                'created_at'    => $this->created_at,
+                'updated_at'    => $this->updated_at,
+            ]
+        ];
     }
 }

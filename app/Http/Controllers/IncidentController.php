@@ -11,6 +11,7 @@ use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class IncidentController extends Controller
 {
@@ -49,6 +50,7 @@ class IncidentController extends Controller
 
         $geocoderResponse = (new Geocoder)->reverse($lat, $long);
 
+        $incident->postcode = $geocoderResponse["address"]["postcode"];
         $incident->address = $geocoderResponse["display_name"];
         $incident->area = Incident::createGeoPolygon($geocoderResponse["geojson"]["coordinates"]);
         $incident->save();
