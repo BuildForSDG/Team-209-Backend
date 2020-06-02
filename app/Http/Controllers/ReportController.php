@@ -53,7 +53,7 @@ class ReportController extends Controller
         $geocoderResponse = (new Geocoder)->reverse($lat, $long);
 
         $report->address = $geocoderResponse["display_name"];
-
+        /** @phpstan-ignore-next-line */
         $incident = Incident::where("postcode", "=", $geocoderResponse["address"]["postcode"])->active()->first();
 
         if (!$incident) {
