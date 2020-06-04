@@ -4,9 +4,12 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\Resources\MissingValue;
 
 class IncidentCollection extends ResourceCollection
 {
+    public $collects = IncidentResource::class;
+
     /**
      * Transform the resource collection into an array.
      *
@@ -16,7 +19,14 @@ class IncidentCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
-            "data" => IncidentResource::collection($this->collection),
+            "data" => $this->collection,
+            'included' => $this->mergeIncludedRelations($request),
         ];
+    }
+
+    private function mergeIncludedRelations($request)
+    {
+        $includes = $this->collection->flatMap->included($request)->unique()->values();
+        return $includes->isNotEmpty() ? $includes : new MissingValue();
     }
 }
