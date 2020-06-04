@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreIncident;
 use App\Http\Resources\IncidentCollection;
 use App\Http\Resources\IncidentResource;
+use App\Http\Resources\ReportCollection;
 use App\Incident;
 use App\Libs\Geocoder;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
@@ -27,7 +28,7 @@ class IncidentController extends Controller
             "address",
             "created_at",
             "updated_at"
-        ])->jsonPaginate();
+        ])->allowedIncludes('reports')->jsonPaginate();
 
         return (new IncidentCollection($incidents))
             ->response()
@@ -67,9 +68,13 @@ class IncidentController extends Controller
      * @param Incident $incident
      * @return JsonResponse
      */
-    public function show(Incident $incident)
+    public function show($incident)
     {
-        return (new IncidentResource($incident))
+        $query = QueryBuilder::for(Incident::where('id', $incident))
+            ->allowedIncludes('reports')
+            ->firstOrFail();
+
+        return (new IncidentResource($query))
             ->response()
             ->header("Content-Type", "application/vnd.api+json");
     }
@@ -98,5 +103,10 @@ class IncidentController extends Controller
     {
         $incident->delete();
         return response(null, 204);
+    }
+
+    public function relatedReports(Incident $incident)
+    {
+        return new ReportCollection($incident->reports);
     }
 }

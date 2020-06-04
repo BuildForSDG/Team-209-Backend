@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUser;
 use App\Http\Requests\UpdateUser;
+use App\Http\Resources\ReportCollection;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UserCollection;
 use App\User;
@@ -29,7 +30,7 @@ class UserController extends Controller
             "email",
             "created_at",
             "updated_at"
-        ])->jsonPaginate();
+        ])->allowedIncludes('reports')->jsonPaginate();
 
         return (new UserCollection($users))
             ->response()
@@ -57,17 +58,16 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param User $user
+     * @param int $user
      * @return UserResource|JsonResponse
      */
-    public function show(User $user)
+    public function show($user)
     {
-        //Mobile Users Should only have access to their accounts
-        if (auth()->user()->type == "mobile" && $user->id != auth()->user()->id) {
-            return response()->json(['error' => 'Not authorized.'], 403);
-        }
+        $query = QueryBuilder::for(User::where('id', $user))
+            ->allowedIncludes('reports')
+            ->firstOrFail();
 
-        return (new UserResource($user))
+        return (new UserResource($query))
             ->response()
             ->header("Content-Type", "application/vnd.api+json");
     }
@@ -154,5 +154,10 @@ class UserController extends Controller
         $user->update(["image" => "default.png"]);
 
         return response(null, 204);
+    }
+
+    public function relatedReports(User $user)
+    {
+        return new ReportCollection($user->reports);
     }
 }

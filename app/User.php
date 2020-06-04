@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Http\Requests\StoreUser;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
@@ -62,5 +61,10 @@ class User extends Authenticatable
     public function getImageAttribute($value)
     {
         return Storage::url("public/images/uploads/profile/".$value);
+    }
+
+    public function reports()
+    {
+        return $this->hasMany('App\Report');
     }
 }

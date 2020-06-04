@@ -7,6 +7,8 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class ReportCollection extends ResourceCollection
 {
+    public $collects = ReportResource::class;
+
     /**
      * Transform the resource collection into an array.
      *
@@ -16,7 +18,7 @@ class ReportCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
-            "data" => ReportResource::collection($this->collection),
+            "data" => $this->collection,
         ];
     }
 }

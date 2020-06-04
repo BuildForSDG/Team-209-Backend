@@ -19,10 +19,6 @@ use Illuminate\Validation\ValidationException;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('users', 'UserController@index')->name("users.index");
     Route::get('users/{user}', 'UserController@show')->name("users.show");
@@ -30,18 +26,31 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('users/{user}', 'UserController@destroy')->name("users.delete");
     Route::post('users/{user}/image', 'UserController@storeImage')->name("users.storeImage");
     Route::delete('users/{user}/image', 'UserController@destroyImage')->name("users.deleteImage");
+    Route::get('users/{id}/relationships/reports', "UserReportsRelationshipController@index")
+        ->name('users.relationships.reports');
+    Route::get('users/{id}/reports', "UserController@relatedReports")->name('users.reports');
 
 //    Route::get('tokens/{token}/relationships/users', '')->name("tokes.relationships.users");
 //    Route::get('tokens/{token}/users', 'UserController@show')->name("tokes.users);
 
     Route::apiResource("incidents", "IncidentController");
+    Route::get('incidents/{id}/relationships/reports', "IncidentReportsRelationshipController@index")
+        ->name('incidents.relationships.reports');
+    Route::get('incidents/{id}/reports', "IncidentController@relatedReports")
+        ->name('incidents.reports');
+
     Route::apiResource("reports", "ReportController");
+//    Route::get('reports/{report}/relationships/resources', "")->name('reports.relationships.resources');
+//    Route::get('reports/{report}/resources', "")->name('reports.resources');
 
     Route::post('/logout', function () {
         Auth::user()->currentAccessToken()->delete();
         return response(null, 204);
     })->name("api.logout");
 });
+
+//No Auth Region
+
 Route::post('users', 'UserController@store')->name("users.store");
 
 

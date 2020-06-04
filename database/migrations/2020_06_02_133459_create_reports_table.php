@@ -17,17 +17,21 @@ class CreateReportsTable extends Migration
             $table->bigIncrements("id");
             $table->string('address')->default("UNKNOWN");
             $table->point('location')->nullable();
+            $table->string('description');
             $table->unsignedBigInteger("incident_id");
             $table->unsignedBigInteger("user_id");
             $table->timestamps(6);
 
             $table->foreign('incident_id')
                 ->references('id')
-                ->on('incidents');
+                ->on('incidents')
+                ->cascadeOnDelete();
 
             $table->foreign('user_id')
                 ->references('id')
-                ->on('users');
+                ->on('users')
+                ->cascadeOnDelete();
+
         });
     }
 

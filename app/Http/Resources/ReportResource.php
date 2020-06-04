@@ -23,9 +23,10 @@ class ReportResource extends JsonResource
             'id'            => strval($this->id),
             'type'          => 'reports',
             'attributes'    => [
-                'address'      => $this->address,
-                'latitude'     => $this->location->getLat(),
-                'longitude'     => $this->location->getLng(),
+                'address'       => $this->address,
+                'description'   => $this->description,
+                'latitude'      => strval($this->location->getLat()),
+                'longitude'     => strval($this->location->getLng()),
                 'created_at'    => $this->created_at,
                 'updated_at'    => $this->updated_at,
             ]
