@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Resources\MissingValue;
 
-class ReportCollection extends ResourceCollection
+class ReportAttachmentCollection extends ResourceCollection
 {
-    public $collects = ReportResource::class;
+    public $collects = ReportAttachmentResource::class;
 
     /**
      * Transform the resource collection into an array.
