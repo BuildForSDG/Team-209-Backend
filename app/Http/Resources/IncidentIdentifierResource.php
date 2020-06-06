@@ -4,6 +4,11 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * Class IncidentIdentifierResource
+ * @package App\Http\Resources
+ * @mixin \App\Incident
+ */
 class IncidentIdentifierResource extends JsonResource
 {
     /**

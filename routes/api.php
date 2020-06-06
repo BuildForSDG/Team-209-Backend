@@ -26,9 +26,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('users/{user}', 'UserController@destroy')->name("users.delete");
     Route::post('users/{user}/image', 'UserController@storeImage')->name("users.storeImage");
     Route::delete('users/{user}/image', 'UserController@destroyImage')->name("users.deleteImage");
-    Route::get('users/user/relationships/reports', "UserReportsRelationshipController@index")
+    Route::get('users/{user}/relationships/reports', "UserReportsRelationshipController@index")
         ->name('users.relationships.reports');
-    Route::get('users/user/reports', "UserController@relatedReports")->name('users.reports');
+    Route::get('users/{user}/reports', "UserController@relatedReports")->name('users.reports');
 
 //    Route::get('tokens/{token}/relationships/users', '')->name("tokes.relationships.users");
 //    Route::get('tokens/{token}/users', 'UserController@show')->name("tokes.users);

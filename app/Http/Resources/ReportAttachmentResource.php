@@ -5,6 +5,11 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * Class ReportAttachmentResource
+ * @package App\Http\Resources
+ * @mixin \App\ReportsAttachment
+ */
 class ReportAttachmentResource extends JsonResource
 {
     /**
@@ -30,7 +35,7 @@ class ReportAttachmentResource extends JsonResource
 //                        'self'    => route('reports.relationships.user', ['id' => $this->id]),
                         'related' => route('attachments.reports', ['attachment' => $this->id]),
                     ],
-                    'data' => new ReportIdentifierResource($this->whenLoaded("report"))
+                    'data' => new ReportIdentifierResource($this->report)
                 ],
             ]
         ];

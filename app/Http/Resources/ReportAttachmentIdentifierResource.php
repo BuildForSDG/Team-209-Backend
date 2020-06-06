@@ -4,6 +4,11 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * Class ReportAttachmentIdentifierResource
+ * @package App\Http\Resources
+ * @mixin \App\ReportsAttachment
+ */
 class ReportAttachmentIdentifierResource extends JsonResource
 {
     /**

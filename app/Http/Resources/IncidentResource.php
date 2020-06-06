@@ -62,9 +62,8 @@ class IncidentResource extends JsonResource
     public function included($request)
     {
         /** @phpstan-ignore-next-line */
-        return collect($this->relations())
-            ->filter(function ($resource) {
+        return collect($this->relations())->filter(function ($resource) {
                 return $resource->collection !== null;
-            })->flatMap->toArray($request);
+        })->flatMap->toArray($request);
     }
 }

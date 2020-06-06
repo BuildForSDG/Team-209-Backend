@@ -36,21 +36,21 @@ class ReportResource extends JsonResource
 //                        'self'    => route('reports.relationships.user', ['id' => $this->id]),
                         'related' => route('reports.users', ['report' => $this->id]),
                     ],
-                    'data' => new UserIdentifierResource($this->whenLoaded("user"))
+                    'data' => new UserIdentifierResource($this->user)
                 ],
                 'incident' => [
                     'links' => [
 //                        'self'    => route('reports.relationships.user', ['id' => $this->id]),
                         'related' => route('reports.incidents', ['report' => $this->id]),
                     ],
-                    'data' => new IncidentIdentifierResource($this->whenLoaded("incident"))
+                    'data' => new IncidentIdentifierResource($this->incident)
                 ],
                 'reports_attachments' => [
                     'links' => [
                         'self'    => route('reports.relationships.attachments', ['report' => $this->id]),
                         'related' => route('reports.attachments', ['report' => $this->id]),
                     ],
-                    'data' => ReportAttachmentIdentifierResource::collection($this->whenLoaded('attachments')),
+                    'data' => ReportAttachmentIdentifierResource::collection($this->attachments),
                 ],
             ]
         ];
@@ -59,8 +59,8 @@ class ReportResource extends JsonResource
     private function relations()
     {
         return [
-//            new UserResource($this->whenLoaded('user')),
-//            new IncidentResource($this->whenLoaded('incident')),
+            new UserResource($this->whenLoaded('user')),
+            new IncidentResource($this->whenLoaded('incident')),
             ReportAttachmentResource::collection($this->whenLoaded('attachments')),
         ];
     }
