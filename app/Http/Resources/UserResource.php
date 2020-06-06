@@ -33,8 +33,8 @@ class UserResource extends JsonResource
             'relationships' => [
                 'reports' => [
                     'links' => [
-                        'self' => route('users.relationships.reports', ['id' => $this->id]),
-                        'related' => route('users.reports', ['id' => $this->id]),
+                        'self' => route('users.relationships.reports', ['user' => $this->id]),
+                        'related' => route('users.reports', ['user' => $this->id]),
                     ],
                     'data' => ReportIdentifierResource::collection($this->whenLoaded('reports')),
                 ],

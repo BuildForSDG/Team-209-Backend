@@ -6,11 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * Class IncidentResource
+ * Class ReportAttachmentResource
  * @package App\Http\Resources
- * @mixin  \App\Incident
+ * @mixin \App\ReportsAttachment
  */
-class IncidentResource extends JsonResource
+class ReportAttachmentResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -22,22 +22,20 @@ class IncidentResource extends JsonResource
     {
         return [
             'id'            => strval($this->id),
-            'type'          => 'incidents',
+            'type'          => 'reports_attachments',
             'attributes'    => [
-                'address'      => $this->address,
-                'location'     => $this->location,
-                'area'         => $this->area,
-                'deactivated'  => $this->deactivated_at,
-                'created_at'   => $this->created_at,
-                'updated_at'   => $this->updated_at,
+                'type'       => $this->type,
+                'file'       => $this->file,
+                'created_at' => $this->created_at,
+                'updated_at' => $this->updated_at,
             ],
             'relationships' => [
                 'reports' => [
                     'links' => [
-                        'self'    => route('incidents.relationships.reports', ['incident' => $this->id]),
-                        'related' => route('incidents.reports', ['incident' => $this->id]),
+//                        'self'    => route('reports.relationships.user', ['id' => $this->id]),
+                        'related' => route('attachments.reports', ['attachment' => $this->id]),
                     ],
-                    'data' => ReportIdentifierResource::collection($this->whenLoaded('reports')),
+                    'data' => new ReportIdentifierResource($this->report)
                 ],
             ]
         ];
@@ -62,8 +60,9 @@ class IncidentResource extends JsonResource
     public function included($request)
     {
         /** @phpstan-ignore-next-line */
-        return collect($this->relations())->filter(function ($resource) {
+        return collect($this->relations())
+            ->filter(function ($resource) {
                 return $resource->collection !== null;
-        })->flatMap->toArray($request);
+            })->flatMap->toArray($request);
     }
 }

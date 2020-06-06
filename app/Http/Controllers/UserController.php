@@ -28,6 +28,7 @@ class UserController extends Controller
         $users = QueryBuilder::for(User::class)->allowedSorts([
             "name",
             "email",
+            "type",
             "created_at",
             "updated_at"
         ])->allowedIncludes('reports')->jsonPaginate();

@@ -26,22 +26,32 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('users/{user}', 'UserController@destroy')->name("users.delete");
     Route::post('users/{user}/image', 'UserController@storeImage')->name("users.storeImage");
     Route::delete('users/{user}/image', 'UserController@destroyImage')->name("users.deleteImage");
-    Route::get('users/{id}/relationships/reports', "UserReportsRelationshipController@index")
+    Route::get('users/{user}/relationships/reports', "UserReportsRelationshipController@index")
         ->name('users.relationships.reports');
-    Route::get('users/{id}/reports', "UserController@relatedReports")->name('users.reports');
+    Route::get('users/{user}/reports', "UserController@relatedReports")->name('users.reports');
 
 //    Route::get('tokens/{token}/relationships/users', '')->name("tokes.relationships.users");
 //    Route::get('tokens/{token}/users', 'UserController@show')->name("tokes.users);
 
     Route::apiResource("incidents", "IncidentController");
-    Route::get('incidents/{id}/relationships/reports', "IncidentReportsRelationshipController@index")
+    Route::get('incidents/{incident}/relationships/reports', "IncidentReportsRelationshipController@index")
         ->name('incidents.relationships.reports');
-    Route::get('incidents/{id}/reports', "IncidentController@relatedReports")
+    Route::get('incidents/{incident}/reports', "IncidentController@relatedReports")
         ->name('incidents.reports');
 
     Route::apiResource("reports", "ReportController");
-//    Route::get('reports/{report}/relationships/resources', "")->name('reports.relationships.resources');
-//    Route::get('reports/{report}/resources', "")->name('reports.resources');
+    Route::get('reports/{report}/users', "ReportController@relatedUser")
+        ->name('reports.users');
+    Route::get('reports/{report}/incidents', "ReportController@relatedIncident")
+        ->name('reports.incidents');
+    Route::get('reports/{report}/relationships/attachments', "ReportAttachmentsRelationshipController@index")
+        ->name('reports.relationships.attachments');
+    Route::get('reports/{report}/attachments', "ReportController@relatedAttachments")
+        ->name('reports.attachments');
+
+    Route::apiResource("attachments", "ReportAttachmentsController");
+    Route::get('attachments/{attachment}/reports', "ReportAttachmentsController@relatedReport")
+        ->name('attachments.reports');
 
     Route::post('/logout', function () {
         Auth::user()->currentAccessToken()->delete();

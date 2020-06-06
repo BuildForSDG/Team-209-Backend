@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreReport;
+use App\Http\Resources\IncidentResource;
+use App\Http\Resources\ReportAttachmentCollection;
+use App\Http\Resources\ReportAttachmentResourceCollection;
 use App\Http\Resources\ReportCollection;
 use App\Http\Resources\ReportResource;
+use App\Http\Resources\UserResource;
 use App\Incident;
 use App\Libs\Geocoder;
 use App\Report;
@@ -24,12 +28,13 @@ class ReportController extends Controller
     public function index()
     {
         /** @phpstan-ignore-next-line */
-        $incidents = QueryBuilder::for(Report::class)->allowedSorts([
+        $reports = QueryBuilder::for(Report::class)->allowedSorts([
             "address",
             "created_at"
-        ])->jsonPaginate();
+        ])->allowedIncludes(["user", 'incident', 'attachments'])
+            ->jsonPaginate();
 
-        return (new ReportCollection($incidents))
+        return (new ReportCollection($reports))
             ->response()
             ->header("Content-Type", "application/vnd.api+json");
     }
@@ -72,12 +77,16 @@ class ReportController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Report $report
+     * @param int $report
      * @return JsonResponse
      */
-    public function show(Report $report)
+    public function show($report)
     {
-        return (new ReportResource($report))
+        $query = QueryBuilder::for(Report::where('id', $report))
+            ->allowedIncludes(["user", 'incident', 'attachments'])
+            ->firstOrFail();
+
+        return (new ReportResource($query))
             ->response()
             ->header("Content-Type", "application/vnd.api+json");
     }
@@ -105,5 +114,20 @@ class ReportController extends Controller
     {
         $report->delete();
         return response(null, 204);
+    }
+
+    public function relatedUser(Report $report)
+    {
+        return new UserResource($report->user);
+    }
+
+    public function relatedIncident(Report $report)
+    {
+        return new IncidentResource($report->incident);
+    }
+
+    public function relatedAttachments(Report $report)
+    {
+        return new ReportAttachmentCollection($report->attachments);
     }
 }
