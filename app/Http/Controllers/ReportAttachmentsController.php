@@ -9,6 +9,8 @@ use App\ReportsAttachment;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class ReportAttachmentsController extends Controller
@@ -73,24 +75,20 @@ class ReportAttachmentsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\ReportsAttachment  $reportsAttachment
-     * @return Response
+     * @param int $attachment
+     * @return JsonResponse
      */
-    public function show(ReportsAttachment $reportsAttachment)
+    public function show($attachment)
     {
-        //
+        $query = QueryBuilder::for(ReportsAttachment::where('id', $attachment))
+            ->allowedIncludes('report')
+            ->firstOrFail();
+
+        return (new ReportAttachmentResource($query))
+            ->response()
+            ->header("Content-Type", "application/vnd.api+json");
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\ReportsAttachment  $reportsAttachment
-     * @return Response
-     */
-//    public function edit(ReportsAttachment $reportsAttachment)
-//    {
-//        //
-//    }
 
     /**
      * Update the specified resource in storage.
@@ -99,20 +97,24 @@ class ReportAttachmentsController extends Controller
      * @param  \App\ReportsAttachment  $reportsAttachment
      * @return Response
      */
-    public function update(Request $request, ReportsAttachment $reportsAttachment)
-    {
-        //
-    }
+//    public function update(Request $request, ReportsAttachment $reportsAttachment)
+//    {
+//        //
+//    }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\ReportsAttachment  $reportsAttachment
+     * @param ReportsAttachment $attachment
      * @return Response
      */
-    public function destroy(ReportsAttachment $reportsAttachment)
+    public function destroy(ReportsAttachment $attachment)
     {
-        //
+        $fileName = Str::afterLast($attachment->file, "/");
+        Storage::delete("public/$attachment->type/uploads/attachments/$attachment->report_id/$fileName");
+
+        $attachment->delete();
+        return response(null, 204);
     }
 
     public function relatedReports(ReportsAttachment $attachment)
