@@ -17,6 +17,18 @@ class StoreReportAttachments extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'report_id' => intval($this->get('report_id')),
+        ]);
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array
@@ -24,11 +36,11 @@ class StoreReportAttachments extends FormRequest
     public function rules()
     {
         return [
-            'report_id' => 'required|integer|exists:reports,id',
+            'report_id' => 'required|exists:reports,id',
             'images'    => 'sometimes|array|between:1,10',
-            'images.*' => 'image|mimes:jpg,jpeg,png|max:10240',
+            'images.*' => 'image|mimes:jpg,jpeg,png|max:5124',
             'audios'    => 'sometimes|array|between:1,10',
-            'audios.*'  => 'mimes:mpga,wav,ogg|max:10240',
+            'audios.*'  => 'mimes:mpga,wav,ogg|max:5124',
         ];
     }
 }

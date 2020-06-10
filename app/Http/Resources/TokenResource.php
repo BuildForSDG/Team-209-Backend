@@ -40,10 +40,8 @@ class TokenResource extends JsonResource
                         "related"   => ""
                     ],
                     "data" => [
-                        [
                             "id"    => strval($this->accessToken->tokenable_id),
                             "type"  => "users"
-                        ]
                     ]
                 ]
             ],
