@@ -27,7 +27,8 @@ class StoreReport extends FormRequest
             'data.type'       => ["required", "in:reports"],
             'data.attributes' => ["required" ," array"],
             'data.attributes.latitude'  => ['required', 'string'],
-            'data.attributes.longitude' => ['required', 'string'],
+            'data.attributes.longitude'  => ['required', 'string'],
+            'data.attributes.description' => ['required', 'string'],
         ];
     }
 }

@@ -52,6 +52,7 @@ class ReportController extends Controller
         $long = floatval($request->validated()["data"]["attributes"]["longitude"]);
 
         $report = new Report;
+        $report->description = $request->validated()["data"]["attributes"]["description"];
         $report->user_id = auth()->id();
 
         $report->location = new Point($lat, $long);
